@@ -33,21 +33,23 @@ conda activate quantum_ml
 
 ### 2. Install PyTorch + PyG extensions based on backend
 
-**GPU (Linux/Windows with CUDA 12.1):**
+Pick the one that matches your machine. The commands are identical for Linux and Windows -- only the presence of a CUDA GPU matters.
+
+**GPU path -- Linux or Windows with an NVIDIA GPU (CUDA 12.1):**
 ```bash
 conda install -y pytorch=2.5.0 torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 pip install -r requirements-common.txt
 pip install -r requirements-gpu.txt
 ```
 
-**CPU-only (Linux/Windows without a GPU):**
+**CPU path -- Linux or Windows without a GPU:**
 ```bash
 conda install -y pytorch=2.5.0 torchvision torchaudio cpuonly -c pytorch
 pip install -r requirements-common.txt
 pip install -r requirements-cpu.txt
 ```
 
-**macOS (Apple Silicon / Intel):**
+**macOS path -- Apple Silicon or Intel Mac:**
 ```bash
 conda install -y pytorch=2.5.0 torchvision torchaudio -c pytorch
 pip install -r requirements-common.txt

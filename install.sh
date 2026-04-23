@@ -5,10 +5,27 @@ ENV_NAME="${ENV_NAME:-quantum_ml}"
 PYTHON_VERSION="3.11"
 TORCH_VERSION="2.5.0"
 
+OS_KERNEL="$(uname)"
+case "$OS_KERNEL" in
+    Darwin)            OS_LABEL="macOS" ;;
+    Linux)             OS_LABEL="Linux" ;;
+    MINGW*|MSYS*|CYGWIN*) OS_LABEL="Windows" ;;
+    *)                 OS_LABEL="$OS_KERNEL" ;;
+esac
+
+if command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi >/dev/null 2>&1; then
+    HAS_NVIDIA_GPU=1
+else
+    HAS_NVIDIA_GPU=0
+fi
+
 detect_backend() {
-    if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS -> always the "mac" path (no CUDA wheels upstream).
+    # Linux or Windows with an NVIDIA GPU -> "gpu" path (CUDA 12.1).
+    # Linux or Windows without a GPU      -> "cpu" path.
+    if [[ "$OS_KERNEL" == "Darwin" ]]; then
         echo "mac"
-    elif command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi >/dev/null 2>&1; then
+    elif [[ "$HAS_NVIDIA_GPU" == "1" ]]; then
         echo "gpu"
     else
         echo "cpu"
@@ -16,7 +33,13 @@ detect_backend() {
 }
 
 BACKEND="$(detect_backend)"
-echo "==> Detected backend: $BACKEND"
+echo "==> OS:       $OS_LABEL"
+if [[ "$HAS_NVIDIA_GPU" == "1" ]]; then
+    echo "==> NVIDIA GPU: yes (nvidia-smi OK)"
+else
+    echo "==> NVIDIA GPU: no"
+fi
+echo "==> Backend:  $BACKEND"
 
 if ! command -v conda >/dev/null 2>&1; then
     echo "ERROR: conda not found. Install Miniconda/Anaconda first." >&2
