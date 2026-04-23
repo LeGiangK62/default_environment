@@ -49,14 +49,14 @@ case "$BACKEND" in
             -c pytorch
         ;;
     mac)
-        # Mac: PyTorch wheel tự chọn MPS/CPU lúc runtime
+        # Mac: the default PyTorch wheel picks MPS/CPU at runtime.
         conda install -y \
             "pytorch=$TORCH_VERSION" torchvision torchaudio \
             -c pytorch
         ;;
 esac
 
-echo "==> Installing common pip deps..."
+echo "==> Installing common pip dependencies..."
 pip install -r requirements-common.txt
 
 echo "==> Installing PyG C++ extensions for $BACKEND..."
@@ -68,12 +68,13 @@ case "$BACKEND" in
         pip install -r requirements-cpu.txt
         ;;
     mac)
-        # PyG không publish prebuilt wheels cho Mac (Apple Silicon/Intel).
-        # torch-geometric (pure Python) đã cài ở requirements-common.txt và dùng được
-        # cho phần lớn model; các extension (pyg_lib, torch_scatter, ...) chỉ cần
-        # nếu bạn dùng các op cụ thể — lúc đó build from source:
+        # PyG does not publish prebuilt wheels for macOS (Apple Silicon/Intel).
+        # The pure-Python torch-geometric package is already installed via
+        # requirements-common.txt and works for most models. The C++ extensions
+        # (pyg_lib, torch_scatter, ...) are only needed for specific ops;
+        # build from source if required, e.g.:
         #   pip install git+https://github.com/rusty1s/pytorch_scatter.git
-        echo "    (skipped — Mac không có prebuilt wheels; build from source nếu cần)"
+        echo "    (skipped -- no prebuilt wheels on macOS; build from source if needed)"
         ;;
 esac
 
