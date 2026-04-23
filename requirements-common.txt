@@ -1,0 +1,13 @@
+numpy==1.26.4
+matplotlib
+scipy
+jupyter
+notebook
+tensorboard
+
+torch-geometric
+
+pennylane
+qiskit==1.2.4
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.29.0
